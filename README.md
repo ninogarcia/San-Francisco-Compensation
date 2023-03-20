@@ -59,9 +59,9 @@ df = df.drop(['EmployeeName', 'Notes', 'Agency'], axis=1)
 ```
 &nbsp;
 
-Remove rows with 0 values in the 'BasePay' column
+Remove rows with 0 and negative values in the 'BasePay' column
 ```python
-df = df[df['BasePay'] != 0]
+df = df[df['BasePay'] > 0]
 ```
 &nbsp;
 
@@ -77,20 +77,34 @@ We analyzed the results of our queries and discovered the following insights:
 
 #### USING MySQL 
 
-1. How many employees are in each job title?
+1. What are the top 10 job titles with the highest number of employee?
 ```sql
 SELECT JobTitle, COUNT(*) AS TotalEmployees
 FROM Salaries
 GROUP BY JobTitle
-ORDER BY TotalEmployees DESC;
+ORDER BY TotalEmployees DESC
+LIMIT 10;
 ```
 &nbsp;
 
-2. What is the distribution of salaries for each job title?
+2. What is the distribution of salaries of top 10 job titles with the highest number?
 ```sql
-SELECT JobTitle, MIN(TotalPay) AS MinSalary, MAX(TotalPay) AS MaxSalary
+SELECT JobTitle, COUNT(*) AS TotalEmployees, 
+    MIN(BasePay) AS MinSalary, MAX(BasePay) AS MaxSalary,
+    AVG(BasePay) AS AvgSalary, STDDEV(BasePay) AS StdDevSalary
 FROM Salaries
-GROUP BY JobTitle;
+WHERE JobTitle IN (
+    SELECT JobTitle
+    FROM (
+        SELECT JobTitle, COUNT(*) AS TotalEmployees
+        FROM Salaries
+        GROUP BY JobTitle
+        ORDER BY TotalEmployees DESC
+        LIMIT 10
+    ) AS top_jobs
+)
+GROUP BY JobTitle
+ORDER BY TotalEmployees DESC;
 ```
 &nbsp;
 
