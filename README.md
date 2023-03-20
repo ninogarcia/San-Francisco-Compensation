@@ -26,3 +26,130 @@ In this case study, we will explore the San Francisco Salaries dataset to analyz
 8. What is the average pension debt for each job title?
 
 By answering these questions, we can gain valuable insights into the factors that contribute to employee compensation in San Francisco and identify areas where interventions may be necessary to ensure fair and equitable compensation for all public sector employees.
+
+## PROCESS
+
+### Cleaning and Preparation of data for analysis
+
+#### USING PYTHON 
+
+Read the CSV file
+```python
+import pandas as pd
+
+df = pd.read_csv(r'...\sf-salaries.csv')
+```
+&nbsp;
+
+Check for nulls
+```python
+df.isnull().sum() / len(df) * 100
+```
+&nbsp;
+
+Remove spaces between words in each column
+```python
+df.columns = df.columns.str.replace(' ', '')
+```
+&nbsp;
+
+Drop unessential columns
+```python
+df = df.drop(['EmployeeName', 'Notes', 'Agency'], axis=1)
+```
+&nbsp;
+
+Remove rows with 0 values in the 'BasePay' column
+```python
+df = df[df['BasePay'] != 0]
+```
+&nbsp;
+
+Save the cleaned data to a new CSV file
+```python
+df.to_csv('SF_Salaries_cleaned.csv', index=False)
+```
+&nbsp;
+
+## ANALYZE
+
+We analyzed the results of our queries and discovered the following insights:
+
+#### USING MySQL 
+
+1. How many employees are in each job title?
+```sql
+SELECT JobTitle, COUNT(*) AS TotalEmployees
+FROM Salaries
+GROUP BY JobTitle
+ORDER BY TotalEmployees DESC;
+```
+&nbsp;
+
+2. What is the distribution of salaries for each job title?
+```sql
+SELECT JobTitle, MIN(TotalPay) AS MinSalary, MAX(TotalPay) AS MaxSalary
+FROM Salaries
+GROUP BY JobTitle;
+```
+&nbsp;
+
+3. What is the average salary for each job title?
+```sql
+SELECT JobTitle, AVG(TotalPay) AS AverageSalary
+FROM Salaries
+GROUP BY JobTitle
+ORDER BY AverageSalary DESC;
+```
+&nbsp;
+
+4. What is the highest salary for each job title?
+```sql
+SELECT JobTitle, MAX(TotalPay) AS HighestSalary
+FROM Salaries
+GROUP BY JobTitle;
+```
+&nbsp;
+
+5. What is the lowest salary for each job title?
+```sql
+SELECT JobTitle, MIN(TotalPay) AS LowestSalary
+FROM Salaries
+GROUP BY JobTitle;
+```
+&nbsp;
+
+6. What is the total pay for each employee?
+```sql
+SELECT JobTitle, TotalPay
+FROM Salaries;
+```
+&nbsp;
+
+7. What is the average total pay for each job title?
+```sql
+SELECT JobTitle, AVG(TotalPay) AS AverageTotalPay
+FROM Salaries
+GROUP BY JobTitle
+ORDER BY AverageTotalPay DESC;
+```
+&nbsp;
+
+8. What is the correlation between years of experience and salaries for different job titles in San Francisco?
+```sql
+SELECT JobTitle, AVG(TotalPay), AVG(YearsExperience) AS AvgExperience, 
+       CORR(TotalPay, YearsExperience) AS Correlation
+FROM Salaries
+GROUP BY JobTitle
+ORDER BY Correlation DESC;
+```
+&nbsp;
+
+9. What is the average pension debt for each job title?
+```sql
+SELECT JobTitle, AVG(PensionDebt) AS AveragePensionDebt
+FROM Salaries
+GROUP BY JobTitle
+ORDER BY AveragePensionDebt DESC;
+```
+&nbsp;
