@@ -108,62 +108,150 @@ ORDER BY TotalEmployees DESC;
 ```
 &nbsp;
 
-3. What is the average salary for each job title?
+3. What is the average basic pay by job title and year between 2017 and 2021?
 ```sql
-SELECT JobTitle, AVG(TotalPay) AS AverageSalary
-FROM Salaries
+SELECT JobTitle, Year, ROUND(AVG(BasePay), 2) AS AverageBasicPay
+FROM salaries
+WHERE JobTitle IN (
+  SELECT JobTitle
+  FROM (
+    SELECT JobTitle, COUNT(*) AS TotalEmployees
+    FROM salaries
+    GROUP BY JobTitle
+    ORDER BY TotalEmployees DESC
+  ) AS top_jobs
+)
+AND Year BETWEEN '2017' AND '2021'
+GROUP BY JobTitle, Year
+ORDER BY JobTitle, Year;
+```
+&nbsp;
+
+4. What are the top 5 job titles with the highest average base pay in 2021 for the job titles that have at least 50 employees?
+```sql
+SELECT JobTitle, AVG(BasePay) AS AverageBasePay
+FROM salaries
+WHERE JobTitle IN (
+  SELECT JobTitle
+  FROM (
+    SELECT JobTitle, COUNT(*) AS TotalEmployees
+    FROM salaries
+    WHERE Year = '2021'
+    GROUP BY JobTitle
+    HAVING TotalEmployees >= 50
+  ) AS top_jobs
+)
 GROUP BY JobTitle
-ORDER BY AverageSalary DESC;
+ORDER BY AverageBasePay DESC
+LIMIT 5;
 ```
 &nbsp;
 
-4. What is the highest salary for each job title?
+5. What are the top 10 job titles with the highest number of employees in 2021 that have an average total pay and benefits above the overall average?
 ```sql
-SELECT JobTitle, MAX(TotalPay) AS HighestSalary
-FROM Salaries
-GROUP BY JobTitle;
-```
-&nbsp;
-
-5. What is the lowest salary for each job title?
-```sql
-SELECT JobTitle, MIN(TotalPay) AS LowestSalary
-FROM Salaries
-GROUP BY JobTitle;
-```
-&nbsp;
-
-6. What is the total pay for each employee?
-```sql
-SELECT JobTitle, TotalPay
-FROM Salaries;
-```
-&nbsp;
-
-7. What is the average total pay for each job title?
-```sql
-SELECT JobTitle, AVG(TotalPay) AS AverageTotalPay
-FROM Salaries
+SELECT JobTitle, COUNT(*) AS TotalEmployees
+FROM salaries
+WHERE JobTitle IN (
+  SELECT JobTitle
+  FROM (
+    SELECT JobTitle, AVG(TotalPay&Benefits) AS AverageTotalPayBenefits
+    FROM salaries
+    WHERE Year = '2021'
+    GROUP BY JobTitle
+    HAVING AverageTotalPayBenefits > (
+      SELECT AVG(TotalPay&Benefits)
+      FROM salaries
+    )
+  ) AS top_jobs
+)
 GROUP BY JobTitle
-ORDER BY AverageTotalPay DESC;
+ORDER BY TotalEmployees DESC
+LIMIT 10;
 ```
 &nbsp;
 
-8. What is the correlation between years of experience and salaries for different job titles in San Francisco?
+6. Which job titles had the highest average BasePay in 2021?
 ```sql
-SELECT JobTitle, AVG(TotalPay), AVG(YearsExperience) AS AvgExperience, 
-       CORR(TotalPay, YearsExperience) AS Correlation
-FROM Salaries
+SELECT JobTitle, ROUND(AVG(BasePay),2) AS AvgBasePay
+FROM salaries
+WHERE JobTitle IN (
+    SELECT JobTitle
+    FROM (
+        SELECT JobTitle, COUNT(*) AS TotalEmployees
+        FROM salaries
+        GROUP BY JobTitle
+        ORDER BY TotalEmployees DESC
+        LIMIT 10
+    ) AS top_jobs
+)
+AND Year = 2021
 GROUP BY JobTitle
-ORDER BY Correlation DESC;
+ORDER BY AvgBasePay DESC;
 ```
 &nbsp;
 
-9. What is the average pension debt for each job title?
+7. What was the average BasePay for employees in the three job titles with the highest number of employees in 2021?
 ```sql
-SELECT JobTitle, AVG(PensionDebt) AS AveragePensionDebt
-FROM Salaries
-GROUP BY JobTitle
-ORDER BY AveragePensionDebt DESC;
+SELECT ROUND(AVG(BasePay),2) AS AvgBasePay
+FROM salaries
+WHERE JobTitle IN (
+    SELECT JobTitle
+    FROM (
+        SELECT JobTitle, COUNT(*) AS TotalEmployees
+        FROM salaries
+        WHERE Year = 2021
+        GROUP BY JobTitle
+        ORDER BY TotalEmployees DESC
+        LIMIT 3
+    ) AS top_jobs
+)
+AND Year = 2021;
 ```
 &nbsp;
+
+8. How many employees had a base pay less than the average base pay for their job title in each year from 2017 to 2021?
+```sql
+SELECT Year, JobTitle, COUNT(*) AS NumEmployeesBelowAvgBasePay
+FROM (
+  SELECT Year, JobTitle, BasePay, AVG(BasePay) OVER (PARTITION BY JobTitle) AS AvgBasePay
+  FROM salaries
+  WHERE Year BETWEEN '2017' AND '2021'
+) AS base_pay_by_jobtitle
+WHERE BasePay < AvgBasePay
+GROUP BY Year, JobTitle
+ORDER BY 2,1;
+```
+&nbsp;
+
+9. How many employees had a total pay and benefits greater than $200,000 in each year from 2017 to 2021?
+```sql
+SELECT Year, COUNT(*) AS NumEmployeesOver200K
+FROM (
+  SELECT Year, Status, (BasePay + OvertimePay + OtherPay + Benefits + PensionDebt) AS TotalPayAndBenefits
+  FROM salaries
+) AS pay_and_benefits
+WHERE TotalPayAndBenefits > 200000 AND Year BETWEEN '2017' AND '2021' AND Status = 'FT'
+GROUP BY Year;
+```
+&nbsp;
+
+10. Which job title had the highest average OvertimePay in 2021?
+```sql
+SELECT JobTitle, ROUND(AVG(OvertimePay),2) AS AvgOvertimePay
+FROM salaries
+WHERE JobTitle IN (
+    SELECT JobTitle
+    FROM (
+        SELECT JobTitle, COUNT(*) AS TotalEmployees
+        FROM salaries
+        WHERE Year = 2020
+        GROUP BY JobTitle
+        ORDER BY TotalEmployees DESC
+        LIMIT 10
+    ) AS top_jobs
+)
+AND Year = 2021
+GROUP BY JobTitle
+ORDER BY AvgOvertimePay DESC
+LIMIT 1;
+```
