@@ -16,14 +16,16 @@ The findings from this case study can be used by policymakers and public sector 
 
 In this case study, we will explore the San Francisco Salaries dataset to analyze different factors that contribute to employee compensation. The dataset includes a range of variables, such as job titles, total pay, years of experience, and pension debt, making it a valuable resource for understanding the compensation of public sector employees. To achieve this goal, we will address the following questions:
 
-1. What are the job titles with the highest number of employees?
-2. What is the distribution of salaries across different job titles?
-3. What is the average salary for each job title?
-4. What is the highest and lowest salary for each job title?
-5. What is the total pay for each employee?
-6. What is the average total pay for each job title?
-7. Is there a correlation between years of experience and salaries for different job titles in San Francisco?
-8. What is the average pension debt for each job title?
+1. What are the top 10 job titles with the highest number of employee?
+2. What is the distribution of salaries of top 10 job titles with the highest number?
+3. What is the average basic pay by job title and year between 2017 and 2021?
+4. What are the top 5 job titles with the highest average base pay in 2021 for the job titles that have at least 50 employees?
+5. What are the top 10 job titles with the highest number of employees in 2021 that have an average total pay and benefits above the overall average?
+6. Which job titles had the highest average BasePay in 2021?
+7. What was the average BasePay for employees in the three job titles with the highest number of employees in 2021?
+8. How many employees had a base pay less than the average base pay for their job title in each year from 2017 to 2021?
+9. How many employees had a total pay and benefits greater than $200,000 in each year from 2017 to 2021?
+10. Which job title had the highest average OvertimePay in 2021?
 
 By answering these questions, we can gain valuable insights into the factors that contribute to employee compensation in San Francisco and identify areas where interventions may be necessary to ensure fair and equitable compensation for all public sector employees.
 
