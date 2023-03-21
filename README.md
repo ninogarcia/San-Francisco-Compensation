@@ -1,4 +1,4 @@
-# Case Study - San Francisco Compensation Using Python, SQL and Tableau
+# Case Study - San Francisco Compensation Using Python and SQL
 
 ## Introduction
 
@@ -257,12 +257,27 @@ GROUP BY JobTitle
 ORDER BY AvgOvertimePay DESC
 LIMIT 1;
 ```
-
+&nbsp;
 
 ## ACT
 
 ### Conclusion:
 Based on our analysis of the salaries dataset, we can conclude that the top job titles with the highest number of employees are "Transit Operator", "Special Nurse", and "Registered Nurse". Additionally, we found that the distribution of salaries among the top 10 job titles is quite wide, with some job titles having a large range of salaries. We also found that the average basic pay varies by job title and year, with some job titles experiencing fluctuations in average pay over time.
+&nbsp;
 
 ### Recommendation:
 Our analysis suggests that organizations should focus on ensuring that employees are paid fairly and equitably across job titles, particularly for job titles that have a large number of employees. Additionally, organizations should consider implementing measures to address the wide range of salaries among job titles and ensure that there is transparency and consistency in pay practices. Finally, organizations should regularly review salary data to identify any trends or fluctuations in average pay by job title and year, and adjust their compensation strategies as needed to remain competitive in the job market.
+&nbsp;
+
+## References
+Dataset Source: [Transparent California](https://roadtraffic.dft.gov.uk/custom-downloads)
+&nbsp;
+
+Licenses: [Database: Open Database, Contents: Database Contents](http://opendatacommons.org/licenses/dbcl/1.0/)
+
+
+## Contact Information
+[LinkedIn](https://www.linkedin.com/in/ninogarci/)
+&nbsp;
+
+[UpWork](https://www.upwork.com/freelancers/~01dd78612ac234aadd)
